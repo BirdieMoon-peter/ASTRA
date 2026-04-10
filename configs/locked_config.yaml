@@ -1,0 +1,16 @@
+selection:
+  split: dev
+  locked_test_split: test
+  model_selection_allowed: true
+  test_locked: true
+  use_cache: false
+  calibration:
+    enabled: true
+    method: temperature_scaling
+  routing:
+    enabled: true
+  thresholds:
+    strategic_optimism: default
+metadata:
+  requires_commit_hash: false
+  notes: "Repository is not currently a git repo; record environment and output roots instead."

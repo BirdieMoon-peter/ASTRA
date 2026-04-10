@@ -1,0 +1,88 @@
+{
+  "primary_signal": "astra_quality_weighted",
+  "forward_horizons": [5, 10, 20],
+  "normalization_method": "winsor_zscore_residual_rank",
+  "min_trade_dates": 20,
+  "execution_policy": {
+    "name": "next_close",
+    "allow_same_day_close": false,
+    "fallback_when_no_publish_time": "next_close",
+    "after_close_policy": "next_trading_day"
+  },
+  "universe": {
+    "name": "a_share_tradable_eval_universe",
+    "exclude_st": true,
+    "exclude_pt": true,
+    "exclude_suspended": true,
+    "exclude_limit_up_down": true,
+    "min_prior_trading_days": 120,
+    "require_forward_returns": true,
+    "missing_filter_fields": "allow"
+  },
+  "report_aggregation": {
+    "level": "stock_day",
+    "normalize_weights_within_stock_day": true,
+    "use_recency_weight": true,
+    "use_broker_coverage_weight": true,
+    "use_analyst_reliability_weight": true,
+    "default_report_weight": 1.0,
+    "recency_half_life_days": 30
+  },
+  "neutralization": {
+    "winsor_lower": 0.01,
+    "winsor_upper": 0.99,
+    "standardize_within_date": true,
+    "residualize_industry": true,
+    "industry_field": "industry",
+    "residualize_style": true,
+    "style_controls": [
+      "log_market_cap",
+      "book_to_market",
+      "reversal_1m",
+      "momentum_12_1",
+      "volatility_20d"
+    ],
+    "residualization_ridge": 0.000001
+  },
+  "portfolio": {
+    "rebalance_frequency": "monthly",
+    "dollar_neutral": true,
+    "industry_neutral_after_residualization": true,
+    "max_name_weight": 0.02,
+    "portfolio_quantiles": 5,
+    "holding_horizon_days": 20
+  },
+  "rolling_protocol": {
+    "training_window": "expanding",
+    "dev_selection_only": true,
+    "retune_on_test": false,
+    "beta_weights_fixed_out_of_sample": true,
+    "lambda_weights_fixed_out_of_sample": true,
+    "beta_weights_method": "inverse_variance_on_dev",
+    "lambda_h": 0.5,
+    "lambda_o": 1.0
+  },
+  "cost_model": {
+    "commission_bps": 0.0,
+    "sell_tax_bps": 0.0,
+    "slippage_bps": 0.0,
+    "short_borrow_bps_annual": 0.0,
+    "headline_return_basis": "gross"
+  },
+  "cost_stress": {
+    "one_way_fee_bps": [5.0, 10.0, 20.0],
+    "slippage_bps": [5.0, 10.0],
+    "impact_model": "linear_participation_rate",
+    "participation_rate": 0.05,
+    "impact_bps_per_1pct_participation": 1.0
+  },
+  "metrics": {
+    "rank_ic_horizons": [5, 10, 20],
+    "rank_ic_tstat": "newey_west",
+    "sharpe_horizon": 20,
+    "turnover_frequency": "monthly_one_way",
+    "include_max_drawdown": true,
+    "include_terminal_cumulative_return": true
+  },
+  "signal_registry_version": 1
+}

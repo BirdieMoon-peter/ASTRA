@@ -1,0 +1,137 @@
+experiment:
+  name: paper_update_20260408
+  purpose: update paper tables and numeric references using newly annotated dev/test gold sets
+  date: 2026-04-08
+
+llm:
+  provider: openai_compatible
+  model: deepseek-v3.2
+  base_url: REDACTED
+  max_tokens: 4000
+  api_key: REDACTED
+
+pipeline:
+  name: astra_inference
+  llm_enabled: true
+  baselines:
+    - rule_baseline
+    - direct_llm
+    - cot_llm
+    - react_llm
+  full_model: astra_mvp
+  ablations:
+    - astra_minus_retrieval
+    - astra_minus_neutralizer
+    - astra_minus_verifier
+    - astra_minus_uncertainty_gate
+    - astra_minus_analyst_prior
+
+selection:
+  split: dev
+  locked_test_split: test
+  model_selection_allowed: true
+  test_locked: true
+  use_cache: false
+  calibration:
+    enabled: true
+    method: temperature_scaling
+  routing:
+    enabled: true
+  thresholds:
+    strategic_optimism: default
+
+data:
+  normalized_annotation_file: data/annotations/solo_annotation_batch_extended400_annotated_normalized.jsonl
+  gold_sets:
+    dev:
+      file: data/annotations/stratreportzh_dev_gold_150.jsonl
+      input_csv: data/annotations/dev_gold_150_input.csv
+      row_count: 150
+    test:
+      file: data/annotations/stratreportzh_test_gold_150.jsonl
+      input_csv: data/annotations/test_gold_150_input.csv
+      row_count: 150
+    train:
+      file: data/annotations/stratreportzh_train_gold_100.jsonl
+      row_count: 100
+
+authored_annotation_distribution:
+  dev150:
+    euphemistic_risk: 2
+    title_body_mismatch: 19
+    none: 111
+    hedged_downside: 18
+    omitted_downside_context: 0
+  test150:
+    euphemistic_risk: 1
+    title_body_mismatch: 9
+    none: 126
+    hedged_downside: 14
+    omitted_downside_context: 0
+
+runs:
+  dev150_seed101:
+    snapshot_id: run_20260408_devgold150_seed101
+    created_at: 2026-04-08T11:03:42.219231+00:00
+    split: dev
+    seed: 101
+    limit: 150
+    row_count: 150
+    source_reports_path: data/annotations/dev_gold_150_input.csv
+    outputs_root: outputs/runs/run_20260408_devgold150_seed101
+    predictions:
+      rule_baseline: outputs/runs/run_20260408_devgold150_seed101/predictions/rule_baseline_predictions.jsonl
+      direct_llm: outputs/runs/run_20260408_devgold150_seed101/predictions/direct_baseline_predictions.jsonl
+      cot_llm: outputs/runs/run_20260408_devgold150_seed101/predictions/cot_baseline_predictions.jsonl
+      react_llm: outputs/runs/run_20260408_devgold150_seed101/predictions/react_baseline_predictions.jsonl
+      astra_mvp: outputs/runs/run_20260408_devgold150_seed101/predictions/astra_predictions.jsonl
+      astra_minus_retrieval: outputs/runs/run_20260408_devgold150_seed101/predictions/ablations/minus_retrieval.jsonl
+      astra_minus_neutralizer: outputs/runs/run_20260408_devgold150_seed101/predictions/ablations/minus_neutralizer.jsonl
+      astra_minus_verifier: outputs/runs/run_20260408_devgold150_seed101/predictions/ablations/minus_verifier.jsonl
+      astra_minus_uncertainty_gate: outputs/runs/run_20260408_devgold150_seed101/predictions/ablations/minus_uncertainty_gate.jsonl
+      astra_minus_analyst_prior: outputs/runs/run_20260408_devgold150_seed101/predictions/ablations/minus_analyst_prior.jsonl
+    evaluation_outputs:
+      nlp_metrics: outputs/eval/devgold150_seed101/nlp_metrics.json
+      calibration_bins: outputs/eval/devgold150_seed101/calibration_bins.json
+      phenomena_metrics: outputs/eval/devgold150_seed101/phenomena_metrics.json
+
+  test150_seed101:
+    snapshot_id: run_20260408_testgold150_seed101
+    created_at: 2026-04-08T11:08:21.025582+00:00
+    split: test
+    seed: 101
+    limit: 150
+    row_count: 150
+    source_reports_path: data/annotations/test_gold_150_input.csv
+    outputs_root: outputs/runs/run_20260408_testgold150_seed101
+    predictions:
+      rule_baseline: outputs/runs/run_20260408_testgold150_seed101/predictions/rule_baseline_predictions.jsonl
+      direct_llm: outputs/runs/run_20260408_testgold150_seed101/predictions/direct_baseline_predictions.jsonl
+      cot_llm: outputs/runs/run_20260408_testgold150_seed101/predictions/cot_baseline_predictions.jsonl
+      react_llm: outputs/runs/run_20260408_testgold150_seed101/predictions/react_baseline_predictions.jsonl
+      astra_mvp: outputs/runs/run_20260408_testgold150_seed101/predictions/astra_predictions.jsonl
+      astra_minus_retrieval: outputs/runs/run_20260408_testgold150_seed101/predictions/ablations/minus_retrieval.jsonl
+      astra_minus_neutralizer: outputs/runs/run_20260408_testgold150_seed101/predictions/ablations/minus_neutralizer.jsonl
+      astra_minus_verifier: outputs/runs/run_20260408_testgold150_seed101/predictions/ablations/minus_verifier.jsonl
+      astra_minus_uncertainty_gate: outputs/runs/run_20260408_testgold150_seed101/predictions/ablations/minus_uncertainty_gate.jsonl
+      astra_minus_analyst_prior: outputs/runs/run_20260408_testgold150_seed101/predictions/ablations/minus_analyst_prior.jsonl
+    evaluation_outputs:
+      nlp_metrics: outputs/eval/testgold150_seed101_with_rule/nlp_metrics.json
+      calibration_bins: outputs/eval/testgold150_seed101_with_rule/calibration_bins.json
+      phenomena_metrics: outputs/eval/testgold150_seed101_with_rule/phenomena_metrics.json
+
+paper_update:
+  main_table_source: outputs/eval/testgold150_seed101_with_rule/nlp_metrics.json
+  phenomena_table_source: outputs/eval/devgold150_seed101/phenomena_metrics.json
+  ablation_table_source: outputs/eval/testgold150_seed101_with_rule/nlp_metrics.json
+  updated_files:
+    - outputs/paper/latex/tab_main_nlp.tex
+    - outputs/paper/latex/tab_phenomena.tex
+    - outputs/paper/latex/tab_ablation.tex
+    - paperpkg/main.tex
+
+notes:
+  - The paper main results table was updated using test150 metrics.
+  - The phenomenon support table was updated using dev150 phenomenon counts and accuracies.
+  - The ablation table was updated using the current test150 metrics for minimal numeric replacement.
+  - Finance table and finance figures were not regenerated in this step.

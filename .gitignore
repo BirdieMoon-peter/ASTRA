@@ -1,0 +1,54 @@
+# Local credentials and private runtime config
+.local/
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.crt
+*.cert
+*credentials*
+*secret*
+*token*
+
+# Python/runtime artifacts
+.venv/
+.vendor/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Claude/local tooling and internal planning notes
+.superpowers/
+.claude/
+docs/
+
+# Internal project notes not for upload
+/audit_repo_inventory.md
+/BLOCKER.md
+/CLAUDE.md
+/paper_artifact_map.md
+/REPRO_STATUS.md
+
+# Generated outputs and root data packages
+/outputs/
+/data/
+trash_bin/
+*.zip
+*.tar
+*.tar.gz
+*.parquet
+*.feather
+*.db
+*.sqlite
+
+# OS/editor
+.DS_Store
+.idea/
+.vscode/
